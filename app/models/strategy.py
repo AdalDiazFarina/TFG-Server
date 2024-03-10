@@ -1,4 +1,4 @@
-from app_context import db
+from database import db
 
 class Strategy(db.Model):
   id = db.Column(db.Integer, primary_key=True)

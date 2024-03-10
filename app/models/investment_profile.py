@@ -1,4 +1,4 @@
-from app_context import db
+from database import db
 
 investment_profile_strategy = db.Table(
     'investment_profile_strategy',
@@ -8,7 +8,7 @@ investment_profile_strategy = db.Table(
 
 class InvestmentProfile(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  id_user = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+  id_user = db.Column(db.Integer, db.ForeignKey('user.id', back_populates='investment_profiles', ondelete='CASCADE'), nullable=False)
   name = db.Column(db.String(255))
   initial_capital = db.Column(db.Numeric)
   duracion = db.Column(db.Date)

@@ -1,7 +1,9 @@
 # main.py
 ## Imports
 import click
+from app.services.user_service import UserService
 from flask import Flask
+from app.models.user import User, bcrypt
 from app_context import create_app
 from app.commands.db import commmand_db_create 
 from app.commands.migrations import command_create_migration, command_update_migration, command_delete_migration
@@ -19,7 +21,12 @@ def cli():
 @cli.command()
 @click.option('--run', '-r', help='Start the application')
 def run(run):
-    app.run(debug=True)
+    user = User(name='John Doe', nickname='johnny', email='john@example.com')
+    user.set_password('1234')
+    print(UserService.createUser(user))
+    print(UserService.get(1))
+    print(UserService.updateUser(User(name='John Doe', nickname='johnny', email='john22@example.com')))
+
 
 @cli.command()
 @click.option('--init', '-i', help='Create everything you need and run the application for the first time')

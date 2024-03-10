@@ -3,7 +3,8 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
-from app_context import create_app, db
+from database import db
+from app_context import create_app
 from app.models.user import User
 from app.models.investment_profile import InvestmentProfile
 from app.models.strategy import Strategy

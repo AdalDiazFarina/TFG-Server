@@ -1,4 +1,4 @@
-from app_context import db
+from database import db
 
 
 class Operation(db.Model):
