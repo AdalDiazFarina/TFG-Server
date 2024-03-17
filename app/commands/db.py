@@ -7,10 +7,10 @@ DB_NAME = os.getenv("DB_NAME")
 
 ### This command cretes the database
 def commmand_db_create():
+  print("Creating database ....") 
   if there_is_a_db(): 
     print("The database already exists")
     return
-  print("Creating database ....") 
   command = f'docker compose up -d'
   r = subprocess.run(command, shell=True, capture_output=True, text=True)
   if (r.returncode == 0):
@@ -19,6 +19,22 @@ def commmand_db_create():
   else:
     print("Command execution failed")
     print(r.stderr)
+
+def command_db_delete():
+  print("Deleting database ....") 
+  if not there_is_a_db(): 
+    print("The database not exists")
+    return
+  commands = []
+  commands.append(f'docker stop {CONTAINER_NAME}')
+  commands.append(f'docker rm {CONTAINER_NAME}')
+  commands.append(f'docker volume rm tfg_postgres_data')
+  for command in commands:
+    r = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if (r.returncode == 0):
+      print(f"Command executed: {command}")
+    else:
+      print(f"Command execution failed: {command}")
 
 ### This command check if the database exits
 def there_is_a_db():

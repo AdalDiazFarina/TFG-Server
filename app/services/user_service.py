@@ -6,25 +6,31 @@ class UserService:
   app = create_app()
 
   @classmethod
-  def get(cls, id):
-    try: 
+  def get_by_id(cls, id):
+    try:
       with cls.app.app_context():
-        return {'code': 1, 'message': 'OK', 'data': User.query.get(id)}
+        user = User.query.get(id)
+        if user:
+          return {'code': 1, 'message': 'OK', 'data': user}
+        else:
+          return {'code': -1, 'message': 'User not found'}
     except Exception as e:
-      return {'code': -1, 'message': 'The user could not be obtained'}
+      return {'code': -1, 'message': str(e)}
 
   @classmethod
-  def get(cls, user):
-    try: 
+  def get_by_filter(cls, filters):
+    try:
       with cls.app.app_context():
         query = db.session.query(User)
-        for key, value in user.to_dict():
-          query = query.filter(getattr(User, key) == value)
-        
-        filtered_users = query.all()
-        return {'code': 1, 'message': 'OK', 'data': filtered_users}
+        conditions = [getattr(User, key) == value for key, value in filters.items() if hasattr(User, key) and value is not None]
+        filtered_query = query.filter(*conditions)
+        filtered_users = filtered_query.all()
+        if filtered_users:
+          return {'code': 1, 'message': 'OK', 'data': filtered_users}
+        else:
+          return {'code': -1, 'message': 'No users found'}
     except Exception as e:
-      return {'code': -1, 'message': 'The user could not be obtained'}
+      return {'code': -2, 'message': f'Error: {e}'}
 
 
   @classmethod
@@ -44,7 +50,7 @@ class UserService:
         user = None
         if newUser.id is not None:
           user = User.query.get(newUser.id)
-
+          
         if user and newUser:
           for key, value in newUser.to_dict():
             if hasattr(user, key) and key != 'id':

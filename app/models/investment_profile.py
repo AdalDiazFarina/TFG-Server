@@ -1,4 +1,6 @@
 from database import db
+from app.models.strategy import Strategy
+from sqlalchemy import ForeignKeyConstraint
 
 investment_profile_strategy = db.Table(
     'investment_profile_strategy',
@@ -7,11 +9,18 @@ investment_profile_strategy = db.Table(
 )
 
 class InvestmentProfile(db.Model):
+  __tablename__ = 'investment_profile'
+  
   id = db.Column(db.Integer, primary_key=True)
-  id_user = db.Column(db.Integer, db.ForeignKey('user.id', back_populates='investment_profiles', ondelete='CASCADE'), nullable=False)
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+  user = db.relationship('User', back_populates='investment_profiles')
   name = db.Column(db.String(255))
   initial_capital = db.Column(db.Numeric)
   duracion = db.Column(db.Date)
   monthly_contribution = db.Column(db.Numeric)
 
-  strategies = db.relationship('Strategy', secondary=investment_profile_strategy, lazy=True, cascade='all, delete-orphan')
+  strategies = db.relationship('Strategy', secondary=investment_profile_strategy, lazy='subquery', passive_deletes=True)
+
+  __table_args__ = (
+    ForeignKeyConstraint(['user_id'], ['user.id'], name='fk_investment_profile_user_id'),
+  )

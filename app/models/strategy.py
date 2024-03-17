@@ -1,6 +1,9 @@
 from database import db
+from app.models.operation import Operation
 
 class Strategy(db.Model):
+  __tablename__ = 'strategy'
+  
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(255))
   description = db.Column(db.String(255))
