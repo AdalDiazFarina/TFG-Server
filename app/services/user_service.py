@@ -48,11 +48,11 @@ class UserService:
     try:
       with cls.app.app_context():
         user = None
-        if newUser.id is not None:
-          user = User.query.get(newUser.id)
+        if newUser.nickname is not None:
+          user = cls.get_by_filter({'nickname': newUser.nickname})['data'][0]
           
         if user and newUser:
-          for key, value in newUser.to_dict():
+          for key, value in newUser.to_dict().items():
             if hasattr(user, key) and key != 'id':
               setattr(user, key, value)
         

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
 import secrets
 import os
 from dotenv import load_dotenv
@@ -15,6 +16,7 @@ def create_app():
   app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
   app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
   app.config['JWT_SECRET_KEY'] = secrets.token_urlsafe(32)
+  app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
   jwt = JWTManager(app)
   db.init_app(app)
 
