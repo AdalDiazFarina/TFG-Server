@@ -6,9 +6,11 @@ import secrets
 import os
 from dotenv import load_dotenv
 from database import db
+from flask_restx import Api
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+api = Api(version='1.0', title='Server API', description='TFG Server Api')
 
 
 def create_app():

@@ -2,22 +2,19 @@
 ## General Imports
 import click
 import time
-from flask import Flask, Blueprint
-from app_context import create_app
+from flask import Flask
+from flask_restx import Swagger
+from app_context import create_app, api
 from app.commands.db import commmand_db_create, command_db_delete
 from app.commands.migrations import command_create_migration, command_update_migration, command_delete_migration
+from app.controllers.auth_controller import RegisterController, LoginController, RefreshController
+from app.controllers.user_controller import UserController
+from app.controllers.investment_profile_controller import InvestmentProfileController
 
-#Controllers imports
-from app.controllers.auth_controller import auth_controller
-from app.controllers.user_controller import user_controller
-from app.controllers.investment_profile_controller import investment_profile_controller
 # Initialization of the app
 app = create_app()
-
-## Here the controllers are registered
-app.register_blueprint(auth_controller, url_prefix='/api')
-app.register_blueprint(user_controller, url_prefix='/api')
-app.register_blueprint(investment_profile_controller, url_prefix='/api')
+api.init_app(app)
+swagger = Swagger(api)
 
 @click.group()
 def cli():
@@ -38,7 +35,7 @@ def init(init):
     ## Waiting for database connection
     time.sleep(2)
     command_update_migration()
-    app.run()
+    app.run(debug=True)
 
 @cli.command()
 @click.argument('description')
