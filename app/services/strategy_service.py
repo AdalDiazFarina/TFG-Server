@@ -46,37 +46,37 @@ class StrategyService:
       db.session.rollback()
       return {'code': -1, 'message': 'Error creating the strategy'}
 
-  # @classmethod
-  # def updateProfile(cls, newProfile):
-  #   try:
-  #     with cls.app.app_context():
-  #       profile = None
-  #       if newProfile.name is not None:
-  #         profile = cls.get_by_filter({'name': newProfile.name})['data'][0]
+  @classmethod
+  def updateStrategy(cls, newStrategy):
+    try:
+      with cls.app.app_context():
+        strategy = None
+        if newStrategy.name is not None:
+          strategy = cls.get_by_filter({'name': newStrategy.strategy.name})['data'][0]
           
-  #       if profile and newProfile:
-  #         for key, value in newProfile.to_dict().items():
-  #           if hasattr(profile, key):
-  #             setattr(profile, key, value)
+        if strategy and newStrategy:
+          for key, value in newStrategy.strategy.to_dict().items():
+            if hasattr(strategy, key):
+              setattr(strategy, key, value)
         
-  #       db.session.add(profile)
-  #       db.session.commit()
-  #       return {'code': 1, 'message': 'OK', 'data': profile.to_dict()}
-  #   except Exception as e:
-  #     db.session.rollback()
-  #     return {'code': -1, 'message': f'Error updating the investment profile {e}'}
+        db.session.add(strategy)
+        db.session.commit()
+        return {'code': 1, 'message': 'OK', 'data': strategy.to_dict()}
+    except Exception as e:
+      db.session.rollback()
+      return {'code': -1, 'message': f'Error updating the investment profile {e}'}
 
-  # @classmethod
-  # def deleteProfile(cls, id):
-  #   try:
-  #     with cls.app.app_context():
-  #         profile = cls.get_by_id(id)
-  #         if profile['code'] == 1:
-  #           db.session.delete(profile['data'])
-  #           db.session.commit()
-  #           return {'code': 1, 'message': 'OK'}
-  #         else:
-  #           return {'code': -1, 'message': 'Profile not found'}
-  #   except Exception as e:
-  #     db.session.rollback()
-  #     return {'code': -1, 'message': 'Error creating the investment profile'}
+  @classmethod
+  def deleteStrategy(cls, id):
+    try:
+      with cls.app.app_context():
+          strategy = cls.get_by_id(id)
+          if strategy['code'] == 1:
+            db.session.delete(strategy['data'])
+            db.session.commit()
+            return {'code': 1, 'message': 'OK'}
+          else:
+            return {'code': -1, 'message': 'Strategy not found'}
+    except Exception as e:
+      db.session.rollback()
+      return {'code': -1, 'message': 'Error deleting the strategy'}

@@ -57,10 +57,6 @@ class InvestmentProfileWithoutIdController(Resource):
       investmentProfileViewModel = InvestmentProfileViewModel(request.get_json())
       filters = {'name': investmentProfileViewModel.profile.name}
       resp = InvestmentProfileService.get_by_filter(filters)
-<<<<<<< HEAD
-=======
-      print(resp)
->>>>>>> 60347a581cdf361d0c2fb42d7ace8a721fa8ed30
       if resp['code'] == 1: 
         return {'code': -1, 'message': 'The investment profile already exists'}, 400
       InvestmentProfileService.createProfile(investmentProfileViewModel.profile)

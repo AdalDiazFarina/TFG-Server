@@ -15,7 +15,7 @@ class InvestmentProfileService:
         if profile:
           return {'code': 1, 'message': 'OK', 'data': profile}
         else:
-          return {'code': -1, 'message': 'User not found'}
+          return {'code': -1, 'message': 'Profile not found'}
     except Exception as e:
       return {'code': -1, 'message': str(e)}
 
@@ -79,4 +79,4 @@ class InvestmentProfileService:
             return {'code': -1, 'message': 'Profile not found'}
     except Exception as e:
       db.session.rollback()
-      return {'code': -1, 'message': 'Error creating the investment profile'}
+      return {'code': -1, 'message': 'Error deleting the investment profile'}
