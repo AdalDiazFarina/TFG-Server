@@ -10,7 +10,17 @@ from flask_restx import Api
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
-api = Api(version='1.0', title='Server API', description='TFG Server Api')
+
+# Bearer token authorization 
+authorizations = {
+    'Bearer': {
+        'type': 'apiKey',
+        'name': 'Authorization',
+        'in': 'header',
+        'description': 'Bearer token'
+    }
+}
+api = Api(version='1.0', title='FundFlowForge API', description='This API provides endpoints to manage user accounts, investment profiles, and perform diferents test of investment strategies using machine learning models applied to this investment profiles. Users can create an account, set up investment profiles, and test various investment strategies based on machine learning predictions', authorizations=authorizations)
 
 
 def create_app():

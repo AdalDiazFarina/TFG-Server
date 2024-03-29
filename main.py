@@ -16,6 +16,7 @@ app = create_app()
 api.init_app(app)
 swagger = Swagger(api)
 
+
 @click.group()
 def cli():
     pass
@@ -33,9 +34,8 @@ def init(init):
     command_db_delete()
     commmand_db_create()
     ## Waiting for database connection
-    time.sleep(2)
+    time.sleep(3)
     command_update_migration()
-    app.run(debug=True)
 
 @cli.command()
 @click.argument('description')

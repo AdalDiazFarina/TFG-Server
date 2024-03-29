@@ -11,6 +11,10 @@ user_ns = api.namespace('User', path='/api', description='User operations')
 @user_ns.route('/user', endpoint='UserController')
 class UserController(Resource):
     @user_ns.doc(description='Get a new user')
+    @user_ns.doc(security='Bearer')
+    @user_ns.response(200, 'Success')
+    @user_ns.response(400, 'Bad Request')
+    @user_ns.response(500, 'Internal Server Error')
     @jwt_required()
     def get(self):
         try:
@@ -19,20 +23,26 @@ class UserController(Resource):
             if user['code'] == 1:
                 return {'code': 1, 'message': 'OK', 'data': user['data'].to_dict()}, 200
             else:
-                return {'code': -1, 'message': 'The user not exists'}, 401
+                return {'code': -1, 'message': 'The user not exists'}, 400
         except Exception as e:
             return {'code': -2, 'message': f'Internal server error {e}'}, 500
 
     @user_ns.doc(description='Update a user')
+    @user_ns.doc(security='Bearer')
     @user_ns.expect(userDoc)
+    @user_ns.response(200, 'Success')
+    @user_ns.response(400, 'Bad Request')
+    @user_ns.response(500, 'Internal Server Error')
     @jwt_required()
     def put(self):
         try:
             userUpdateViewModel = UserUpdateViewModel(request.get_json())
             resp = UserService.updateUser(userUpdateViewModel)
             if resp['code'] == 1:
-                return {'code': 1, 'message': 'OK', 'data': resp['data'].to_dict()}, 200
+                user = resp['data']
+                return {'code': 1, 'message': 'OK', 'data': f'{user}'}, 200
             else:
-                return jsonify(code=-1, message='The user could not be updated'), 401 
+                return {'code': -1, 'message': 'The user could not be updated'}, 400
         except Exception as e:
+            db.session.rollback()
             return {'code': -2, 'message': f'Internal server error {e}'}, 500

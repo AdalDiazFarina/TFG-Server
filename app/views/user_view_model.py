@@ -2,16 +2,14 @@ from app.models.user import User
 from app_context import api
 from flask_restx import fields
 
-auth_ns = api.namespace('auth', path='/api/auth', description='Authentication operations')
-
-userDoc = auth_ns.model('User', {
+userDoc = api.model('User', {
     'name': fields.String(required=True, description='User name'),
     'nickname': fields.String(required=True, description='User description'),
     'email': fields.String(required=True, description='User email'),
     'password': fields.String(required=True, description='User password')
 })
 
-userDocLogin = auth_ns.model('UserLogin', {
+userDocLogin = api.model('UserLogin', {
     'nickname': fields.String(required=True, description='User description'),
     'password': fields.String(required=True, description='User password')
 })
