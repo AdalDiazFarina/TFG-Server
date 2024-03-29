@@ -1,7 +1,6 @@
 from app.models.investment_profile import InvestmentProfile
 from app_context import api
 from flask_restx import fields
-from flask_restx import fields
 
 investmentProfileDoc = api.model('InvestmentProfile', {
     'user_id': fields.Integer(required=True, description='User ID'),

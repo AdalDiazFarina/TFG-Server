@@ -19,32 +19,32 @@ class StrategyService:
     except Exception as e:
       return {'code': -1, 'message': str(e)}
 
-  # @classmethod
-  # def get_by_filter(cls, filters):
-  #   try:
-  #     with cls.app.app_context():
-  #       query = db.session.query(InvestmentProfile)
-  #       conditions = [getattr(InvestmentProfile, key) == value for key, value in filters.items() if hasattr(InvestmentProfile, key) and value is not None]
-  #       filtered_query = query.filter(*conditions)
-  #       filtered_profiles = filtered_query.all()
-  #       if filtered_profiles:
-  #         return {'code': 1, 'message': 'OK', 'data': filtered_profiles}
-  #       else:
-  #         return {'code': -1, 'message': 'No investment profiles found'}
-  #   except Exception as e:
-  #     return {'code': -2, 'message': f'Error: {e}'}
+  @classmethod
+  def get_by_filter(cls, filters):
+    try:
+      with cls.app.app_context():
+        query = db.session.query(Strategy)
+        conditions = [getattr(Strategy, key) == value for key, value in filters.items() if hasattr(Strategy, key) and value is not None]
+        filtered_query = query.filter(*conditions)
+        filtered_profiles = filtered_query.all()
+        if filtered_strategy:
+          return {'code': 1, 'message': 'OK', 'data': filtered_strategy}
+        else:
+          return {'code': -1, 'message': 'No strategies found'}
+    except Exception as e:
+      return {'code': -2, 'message': f'Error: {e}'}
 
 
-  # @classmethod
-  # def createProfile(cls, profile):
-  #   try:
-  #     with cls.app.app_context():
-  #         db.session.add(profile)
-  #         db.session.commit()
-  #         return {'code': 1, 'message': 'OK'}
-  #   except Exception as e:
-  #     db.session.rollback()
-  #     return {'code': -1, 'message': 'Error creating the investment profile'}
+  @classmethod
+  def createStrategy(cls, strategy):
+    try:
+      with cls.app.app_context():
+          db.session.add(strategy)
+          db.session.commit()
+          return {'code': 1, 'message': 'OK'}
+    except Exception as e:
+      db.session.rollback()
+      return {'code': -1, 'message': 'Error creating the strategy'}
 
   # @classmethod
   # def updateProfile(cls, newProfile):

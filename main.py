@@ -10,7 +10,6 @@ from app.commands.migrations import command_create_migration, command_update_mig
 from app.controllers.auth_controller import RegisterController, LoginController, RefreshController
 from app.controllers.user_controller import UserController
 from app.controllers.investment_profile_controller import InvestmentProfileController, InvestmentProfileWithoutIdController
-from app.controllers.strategy_controller import StrategyController, StrategyWithoutIdController
 
 # Initialization of the app
 app = create_app()
