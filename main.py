@@ -9,12 +9,14 @@ from app.commands.db import commmand_db_create, command_db_delete
 from app.commands.migrations import command_create_migration, command_update_migration, command_delete_migration
 from app.controllers.auth_controller import RegisterController, LoginController, RefreshController
 from app.controllers.user_controller import UserController
-from app.controllers.investment_profile_controller import InvestmentProfileController
+from app.controllers.investment_profile_controller import InvestmentProfileController, InvestmentProfileWithoutIdController
+from app.controllers.strategy_controller import StrategyController, StrategyWithoutIdController
 
 # Initialization of the app
 app = create_app()
 api.init_app(app)
 swagger = Swagger(api)
+
 
 @click.group()
 def cli():
@@ -33,9 +35,8 @@ def init(init):
     command_db_delete()
     commmand_db_create()
     ## Waiting for database connection
-    time.sleep(2)
+    time.sleep(3)
     command_update_migration()
-    app.run(debug=True)
 
 @cli.command()
 @click.argument('description')

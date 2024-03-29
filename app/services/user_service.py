@@ -50,14 +50,17 @@ class UserService:
         user = None
         if newUser.nickname is not None:
           user = cls.get_by_filter({'nickname': newUser.nickname})['data'][0]
-          
+        print('user: ', user.to_dict().items())
         if user and newUser:
+          print('new user: ', newUser.to_dict().items())
           for key, value in newUser.to_dict().items():
             if hasattr(user, key) and key != 'id':
               setattr(user, key, value)
         
+          db.session.add(user)
           db.session.commit()
       
-        return {'code': 1, 'message': 'OK', 'data': user}
+        return {'code': 1, 'message': 'OK', 'data': user.to_dict()}
     except Exception as e:
+      print('Error', e)
       return {'code': -1, 'message': 'Error updating the user'}

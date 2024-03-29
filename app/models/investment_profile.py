@@ -16,10 +16,18 @@ class InvestmentProfile(db.Model):
   user = db.relationship('User', back_populates='investment_profiles')
   name = db.Column(db.String(255))
   initial_capital = db.Column(db.Numeric)
-  duracion = db.Column(db.Date)
+  duration = db.Column(db.Date)
   monthly_contribution = db.Column(db.Numeric)
 
   strategies = db.relationship('Strategy', secondary=investment_profile_strategy, lazy='subquery', passive_deletes=True)
+
+  def to_dict(self):
+    return { 
+      'name': self.name,
+      'initial_capital': float(self.initial_capital), 
+      'duration': self.duration.isoformat(),
+      'monthly_contribution': float(self.monthly_contribution)
+    }
 
   __table_args__ = (
     ForeignKeyConstraint(['user_id'], ['user.id'], name='fk_investment_profile_user_id'),
