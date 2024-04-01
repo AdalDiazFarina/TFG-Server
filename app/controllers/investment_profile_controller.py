@@ -82,3 +82,25 @@ class InvestmentProfileWithoutIdController(Resource):
         return {'code': -1, 'message': 'The investment profile could not be updated. ' + resp['message']}, 400 
     except Exception as e:
       return {'code': -2, 'message': f'Internal server error {e}'}, 500
+
+@profile_ns.route('/investmentprofile/getList')
+class InvestmentProfileWithoutIdController(Resource):
+  @profile_ns.doc(description='Get all the investment profiles')
+  @profile_ns.doc(security='Bearer')
+  @profile_ns.expect(investmentProfileDoc)
+  @profile_ns.response(200, 'Sucess')
+  @profile_ns.response(400, 'Bad Request')
+  @profile_ns.response(500, 'Internal Server Error')
+  # @jwt_required()
+  def post(self):
+    try:
+      investmentProfileViewModel = InvestmentProfileViewModel(request.get_json())
+      resp = InvestmentProfileService.get_by_filter(investmentProfileViewModel.profile.to_dict())
+      if resp['code'] == 1:
+        result = [];
+        for profile in resp['data']:
+          result.append(profile.to_dict())
+        return {'code': 1, 'message': 'OK', 'data': result}, 200
+      return {'code': -1, 'message': 'Not found investments profiles'}, 400
+    except Exception as e:
+      return {'code': -2, 'message': f'Internal server error {e}'}, 500

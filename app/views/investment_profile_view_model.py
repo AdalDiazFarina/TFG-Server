@@ -1,6 +1,7 @@
 from app.models.investment_profile import InvestmentProfile
 from app_context import api
 from flask_restx import fields
+from datetime import datetime
 
 investmentProfileDoc = api.model('InvestmentProfile', {
     'user_id': fields.Integer(required=True, description='User ID'),
@@ -14,11 +15,20 @@ class InvestmentProfileViewModel:
   profile = InvestmentProfile()
 
   def __init__(self, data):
-    self.profile.user_id = data['user_id']
-    self.profile.name = data['name']
-    self.profile.initial_capital = data['initial_capital']
-    self.profile.duration = data['duration']
-    self.profile.monthly_contribution = data['monthly_contribution']
+    self.profile.user_id = data['user_id'] if data['user_id'] is not None else -1
+    self.profile.name = data['name'] 
+    self.profile.initial_capital = data['initial_capital'] if data['initial_capital'] is not None else -1
+    self.profile.duration = data['duration'] if data['duration'] is not None else datetime.now()
+    self.profile.monthly_contribution = data['monthly_contribution'] if data['monthly_contribution'] is not None else -1
+
+  def to_dict():
+    return { 
+      'user_id': self.profile.user_id,
+      'name': self.profile.name,
+      'initial_capital': float(self.profile.initial_capital), 
+      'duration': self.profile.duration.isoformat(),
+      'monthly_contribution': float(self.profile.monthly_contribution)
+    }
 
 class UpdateInvestmentProfileViewModel:
   name = ''

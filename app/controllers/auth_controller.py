@@ -25,7 +25,7 @@ class RegisterController(Resource):
             if resp['code'] == 1: 
                 return {'code': -1, 'message': 'The user already exists'}, 400
             UserService.createUser(userViewModel.user)
-            return {'code': 1, 'message': 'User registered successfully', 'data': userViewModel.user.to_dict()}, 201
+            return {'code': 1, 'message': 'User registered successfully'}, 201
         except Exception as e:
             db.session.rollback()
             return {'code': -2, 'message': 'Internal Server Error: {e}'}, 500

@@ -3,6 +3,7 @@ from app.models.investment_profile import InvestmentProfile
 from app_context import create_app
 from flask_restx import Resource
 from sqlalchemy.orm.session import Session
+from datetime import datetime
 
 class InvestmentProfileService:
   app = create_app()
@@ -24,7 +25,7 @@ class InvestmentProfileService:
     try:
       with cls.app.app_context():
         query = db.session.query(InvestmentProfile)
-        conditions = [getattr(InvestmentProfile, key) == value for key, value in filters.items() if hasattr(InvestmentProfile, key) and value is not None]
+        conditions = [getattr(InvestmentProfile, key) == value for key, value in filters.items() if hasattr(InvestmentProfile, key) and value != -1 and value > datetime.now().isoformat()]
         filtered_query = query.filter(*conditions)
         filtered_profiles = filtered_query.all()
         if filtered_profiles:

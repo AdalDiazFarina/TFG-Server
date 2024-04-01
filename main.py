@@ -4,6 +4,7 @@ import click
 import time
 from flask import Flask
 from flask_restx import Swagger
+from flask_cors import CORS
 from app_context import create_app, api
 from app.commands.db import commmand_db_create, command_db_delete
 from app.commands.migrations import command_create_migration, command_update_migration, command_delete_migration
@@ -13,6 +14,7 @@ from app.controllers.investment_profile_controller import InvestmentProfileContr
 
 # Initialization of the app
 app = create_app()
+CORS(app, origins=['http://127.0.0.1:4200'])
 api.init_app(app)
 swagger = Swagger(api)
 
