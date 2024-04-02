@@ -15,9 +15,8 @@ userDocLogin = api.model('UserLogin', {
 })
 
 class UserViewModel:
-  user = User()
-
   def __init__(self, data):
+    self.user = User()
     self.user.name = data['name']
     self.user.nickname = data['nickname']
     self.user.email = data['email']

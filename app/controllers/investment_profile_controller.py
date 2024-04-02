@@ -51,7 +51,7 @@ class InvestmentProfileWithoutIdController(Resource):
   @profile_ns.response(201, 'Created')
   @profile_ns.response(400, 'Bad Request')
   @profile_ns.response(500, 'Internal Server Error')
-  @jwt_required()
+  # @jwt_required()
   def post(self):
     try:
       investmentProfileViewModel = InvestmentProfileViewModel(request.get_json())
@@ -89,7 +89,6 @@ class InvestmentProfileWithoutIdController(Resource):
   @profile_ns.doc(security='Bearer')
   @profile_ns.expect(investmentProfileDoc)
   @profile_ns.response(200, 'Sucess')
-  @profile_ns.response(400, 'Bad Request')
   @profile_ns.response(500, 'Internal Server Error')
   # @jwt_required()
   def post(self):
@@ -97,10 +96,10 @@ class InvestmentProfileWithoutIdController(Resource):
       investmentProfileViewModel = InvestmentProfileViewModel(request.get_json())
       resp = InvestmentProfileService.get_by_filter(investmentProfileViewModel.profile.to_dict())
       if resp['code'] == 1:
-        result = [];
+        result = []
         for profile in resp['data']:
           result.append(profile.to_dict())
         return {'code': 1, 'message': 'OK', 'data': result}, 200
-      return {'code': -1, 'message': 'Not found investments profiles'}, 400
+      return {'code': 1, 'message': 'Not found investments profiles'}, 200
     except Exception as e:
       return {'code': -2, 'message': f'Internal server error {e}'}, 500

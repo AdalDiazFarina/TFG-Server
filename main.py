@@ -14,7 +14,7 @@ from app.controllers.investment_profile_controller import InvestmentProfileContr
 
 # Initialization of the app
 app = create_app()
-CORS(app, origins=['http://127.0.0.1:4200'])
+CORS(app)
 api.init_app(app)
 swagger = Swagger(api)
 

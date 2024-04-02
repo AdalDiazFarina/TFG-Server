@@ -15,6 +15,7 @@ class InvestmentProfile(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
   user = db.relationship('User', back_populates='investment_profiles')
   name = db.Column(db.String(255))
+  description = db.Column(db.String(255))
   initial_capital = db.Column(db.Numeric)
   duration = db.Column(db.Date)
   monthly_contribution = db.Column(db.Numeric)
@@ -23,7 +24,10 @@ class InvestmentProfile(db.Model):
 
   def to_dict(self):
     return { 
+      'id': self.id,
+      'user_id': self.user_id,
       'name': self.name,
+      'description': self.description,
       'initial_capital': float(self.initial_capital), 
       'duration': self.duration.isoformat(),
       'monthly_contribution': float(self.monthly_contribution)
