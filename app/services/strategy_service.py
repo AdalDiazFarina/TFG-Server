@@ -1,11 +1,12 @@
 from database import db
 from app.models.strategy import Strategy
+from app.models.investment_profile import investment_profile_strategy
 from app_context import create_app
 from flask_restx import Resource
 from sqlalchemy.orm.session import Session
 
 class StrategyService:
-  app = create_app()
+  app, socketio = create_app()
 
   @classmethod
   def get_by_id(cls, id):
@@ -24,17 +25,25 @@ class StrategyService:
     try:
       with cls.app.app_context():
         query = db.session.query(Strategy)
-        conditions = [getattr(Strategy, key) == value for key, value in filters.items() if hasattr(Strategy, key) and value is not None]
+        if filters['profile_id'] != -1:
+          query = query.join(investment_profile_strategy).filter(investment_profile_strategy.c.investment_profile_id == filters['profile_id'])
+        conditions = []
+        for key, value in filters.items():
+          if hasattr(Strategy, key) and key != 'id':
+            if isinstance(value, int) and value != -1:
+              conditions.append(getattr(Strategy, key) == value)
+            if isinstance(value, str) and value != '':
+              conditions.append(func.lower(getattr(Strategy, key)).ilike('%' + value.lower() + '%'))
         filtered_query = query.filter(*conditions)
-        filtered_profiles = filtered_query.all()
-        if filtered_strategy:
-          return {'code': 1, 'message': 'OK', 'data': filtered_strategy}
+        filtered_strategies = filtered_query.all()
+        if filtered_strategies:
+          return {'code': 1, 'message': 'OK', 'data': filtered_strategies}
         else:
           return {'code': -1, 'message': 'No strategies found'}
     except Exception as e:
+      print("Error: ", e)
       return {'code': -2, 'message': f'Error: {e}'}
-
-
+   
   @classmethod
   def createStrategy(cls, strategy):
     try:

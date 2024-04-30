@@ -6,7 +6,7 @@ from app.views.user_view_model import UserUpdateViewModel, userDoc
 from app.models.user import User
 from app_context import api
 
-user_ns = api.namespace('User', path='/api', description='User operations')
+user_ns = api.namespace('User', path='/api', description='User end points')
 
 @user_ns.route('/user', endpoint='UserController')
 class UserController(Resource):

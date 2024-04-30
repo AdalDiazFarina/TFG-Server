@@ -7,7 +7,7 @@ from app.views.user_view_model import UserViewModel, userDoc, userDocLogin
 from app.models.user import User
 from app_context import api
 
-auth_ns = api.namespace('Auth', path='/api', description='Authentication operations')
+auth_ns = api.namespace('Auth', path='/api', description='Authentication end points')
 
 ## Auth class. This class contain the authentification routes
 @auth_ns.route('/register')
@@ -68,4 +68,4 @@ class RefreshController(Resource):
         current_user = get_jwt_identity()
         new_access_token = create_access_token(identity=current_user)
         new_refresh_token = create_refresh_token(identity=current_user)
-        return {'code': 1, 'message': 'OK', 'access_token': access_token, 'refresh_token': refresh_token}, 200   
+        return {'code': 1, 'message': 'OK', 'access_token': new_access_token, 'refresh_token': new_refresh_token}, 200   

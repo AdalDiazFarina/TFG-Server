@@ -3,7 +3,7 @@ from app.models.user import User
 from app_context import create_app
 
 class UserService:
-  app = create_app()
+  app, socketio = create_app()
 
   @classmethod
   def get_by_id(cls, id):

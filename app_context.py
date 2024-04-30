@@ -7,9 +7,12 @@ import os
 from dotenv import load_dotenv
 from database import db
 from flask_restx import Api
+from sqlalchemy import create_engine
+from flask_socketio import SocketIO
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
 
 # Bearer token authorization 
 authorizations = {
@@ -31,5 +34,6 @@ def create_app():
   app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
   jwt = JWTManager(app)
   db.init_app(app)
+  socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*", socketio_path='/socket.io', engineio_logger=True)
 
-  return app
+  return app, socketio

@@ -29,7 +29,7 @@ class InvestmentProfile(db.Model):
       'name': self.name,
       'description': self.description,
       'initial_capital': float(self.initial_capital), 
-      'duration': self.duration.isoformat(),
+      'duration': f'{self.duration}',
       'monthly_contribution': float(self.monthly_contribution)
     }
 

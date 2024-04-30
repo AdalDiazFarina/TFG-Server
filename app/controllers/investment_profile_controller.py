@@ -5,7 +5,7 @@ from app.services.investment_profile_service import InvestmentProfileService
 from app.views.investment_profile_view_model import InvestmentProfileViewModel, investmentProfileDoc, UpdateInvestmentProfileViewModel
 from app_context import api
 
-profile_ns = api.namespace('Investment profile', path='/api', description='Investment profile operations')
+profile_ns = api.namespace('Investment profile', path='/api', description='Investment profile end points')
 
 @profile_ns.route('/investmentprofile/<int:id>')
 class InvestmentProfileController(Resource):
@@ -51,7 +51,7 @@ class InvestmentProfileWithoutIdController(Resource):
   @profile_ns.response(201, 'Created')
   @profile_ns.response(400, 'Bad Request')
   @profile_ns.response(500, 'Internal Server Error')
-  # @jwt_required()
+  @jwt_required()
   def post(self):
     try:
       investmentProfileViewModel = InvestmentProfileViewModel(request.get_json())
@@ -82,6 +82,24 @@ class InvestmentProfileWithoutIdController(Resource):
         return {'code': -1, 'message': 'The investment profile could not be updated. ' + resp['message']}, 400 
     except Exception as e:
       return {'code': -2, 'message': f'Internal server error {e}'}, 500
+  
+  @profile_ns.doc(description='Delete a investment profile by id')
+  @profile_ns.param('id', 'The ID of the investment profile', _in='path', required=True, type='integer')
+  @profile_ns.doc(security='Bearer')
+  @jwt_required()
+  @profile_ns.response(200, 'Success')
+  @profile_ns.response(400, 'Bad Request')
+  @profile_ns.response(500, 'Internal Server Error')
+  def delete(self):
+    try:
+      ids = request.json
+      resp = InvestmentProfileService.deleteMultipleProfile(ids)
+      if resp['code'] == 1:
+        return {'code': 1, 'message': 'OK', 'data': {}}, 200
+      else:
+        return {'code': -1, 'message': 'The investment profiles could not be deleted'}, 400
+    except Exception as e:
+      return {'code': -2, 'message': f'Internal server error {e}'}, 500
 
 @profile_ns.route('/investmentprofile/getList')
 class InvestmentProfileWithoutIdController(Resource):
@@ -90,7 +108,7 @@ class InvestmentProfileWithoutIdController(Resource):
   @profile_ns.expect(investmentProfileDoc)
   @profile_ns.response(200, 'Sucess')
   @profile_ns.response(500, 'Internal Server Error')
-  # @jwt_required()
+  @jwt_required()
   def post(self):
     try:
       investmentProfileViewModel = InvestmentProfileViewModel(request.get_json())

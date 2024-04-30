@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-app = create_app()
+app, socketio = create_app()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

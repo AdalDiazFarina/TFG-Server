@@ -1,12 +1,14 @@
 from database import db
 from app.models.investment_profile import InvestmentProfile
-from app_context import create_app
+from app_context import create_app, engine
 from flask_restx import Resource
 from sqlalchemy.orm.session import Session
 from datetime import datetime, date
+from sqlalchemy import func, delete
+from sqlalchemy.orm import sessionmaker
 
 class InvestmentProfileService:
-  app = create_app()
+  app, socketio = create_app()
 
   @classmethod
   def get_by_id(cls, id):
@@ -27,9 +29,11 @@ class InvestmentProfileService:
         query = db.session.query(InvestmentProfile)
         conditions = []
         for key, value in filters.items():
-          if hasattr(InvestmentProfile, key) and value != -1:
-            if isinstance(value, date) and value > datetime.now():
+          if hasattr(InvestmentProfile, key):
+            if isinstance(value, int) and value != -1:
               conditions.append(getattr(InvestmentProfile, key) == value)
+            if isinstance(value, str) and value != '':
+              conditions.append(func.lower(getattr(InvestmentProfile, key)).ilike('%' + value.lower() + '%'))
         filtered_query = query.filter(*conditions)
         filtered_profiles = filtered_query.all()
         if filtered_profiles:
@@ -55,9 +59,9 @@ class InvestmentProfileService:
     try:
       with cls.app.app_context():
         profile = None
-        if newProfile.name is not None:
-          profile = cls.get_by_filter({'name': newProfile.name})['data'][0]
-          
+        if newProfile.id is not None:
+          profile = cls.get_by_filter({'id': newProfile.id})['data'][0]
+        
         if profile and newProfile:
           for key, value in newProfile.to_dict().items():
             if hasattr(profile, key):
@@ -84,3 +88,15 @@ class InvestmentProfileService:
     except Exception as e:
       db.session.rollback()
       return {'code': -1, 'message': 'Error deleting the investment profile'}
+
+  @classmethod
+  def deleteMultipleProfile(cls, ids):
+    try:
+      Session = sessionmaker(bind=engine)
+      session = Session()
+      session.execute(delete(InvestmentProfile).where(InvestmentProfile.id.in_(ids)))
+      session.commit()
+      session.close()
+      return {'code': 1, 'message': 'OK'}
+    except Exception as e:
+      return {'code': -1, 'message': f'Error deleting investment profiles: {e}'}

@@ -11,9 +11,10 @@ from app.commands.migrations import command_create_migration, command_update_mig
 from app.controllers.auth_controller import RegisterController, LoginController, RefreshController
 from app.controllers.user_controller import UserController
 from app.controllers.investment_profile_controller import InvestmentProfileController, InvestmentProfileWithoutIdController
+from app.controllers.strategy_controller import StrategyController
 
 # Initialization of the app
-app = create_app()
+app, socketio = create_app()
 CORS(app)
 api.init_app(app)
 swagger = Swagger(api)
@@ -27,8 +28,7 @@ def cli():
 @click.option('--run', '-r', help='Start the application')
 def run(run):
     if __name__ == '__main__':
-        app.run(debug=True)
-
+        socketio.run(app)
 
 @cli.command()
 @click.option('--init', '-i', help='Create everything you need and run the application for the first time')
