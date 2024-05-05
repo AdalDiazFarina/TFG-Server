@@ -25,14 +25,16 @@ class UserViewModel:
 
 
 class UserUpdateViewModel:
+  id = ''
   name = ''
   nickname = ''
   email = ''
 
   def __init__(self, data):
+    self.id = data['id']
     self.name = data['name']
     self.nickname = data['nickname']
     self.email = data['email']
   
   def to_dict(self):
-    return {'name': self.name, 'nickname': self.nickname, 'email': self.email}
+    return {'id': id, 'name': self.name, 'nickname': self.nickname, 'email': self.email}

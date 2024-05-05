@@ -35,6 +35,7 @@ class InvestmentProfileService:
             if isinstance(value, str) and value != '':
               conditions.append(func.lower(getattr(InvestmentProfile, key)).ilike('%' + value.lower() + '%'))
         filtered_query = query.filter(*conditions)
+        print(*conditions)
         filtered_profiles = filtered_query.all()
         if filtered_profiles:
           return {'code': 1, 'message': 'OK', 'data': filtered_profiles}
@@ -52,6 +53,7 @@ class InvestmentProfileService:
           db.session.commit()
           return {'code': 1, 'message': 'OK'}
     except Exception as e:
+      print('Error creating the investment profile')
       return {'code': -1, 'message': 'Error creating the investment profile'}
 
   @classmethod

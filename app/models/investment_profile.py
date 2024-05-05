@@ -5,7 +5,17 @@ from sqlalchemy import ForeignKeyConstraint
 investment_profile_strategy = db.Table(
     'investment_profile_strategy',
     db.Column('investment_profile_id', db.Integer, db.ForeignKey('investment_profile.id', ondelete='CASCADE'), primary_key=True),
-    db.Column('strategy_id', db.Integer, db.ForeignKey('strategy.id', ondelete='CASCADE'), primary_key=True)
+    db.Column('strategy_id', db.Integer, db.ForeignKey('strategy.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('total_profitability', db.Numeric),
+    db.Column('volatility', db.Numeric),
+    db.Column('maximum_loss', db.Numeric),
+    db.Column('sharpe', db.Numeric),
+    db.Column('sortino', db.Numeric),
+    db.Column('alpha', db.Numeric),
+    db.Column('beta', db.Numeric),
+    db.Column('information_ratio', db.Numeric),
+    db.Column('success_rate', db.Numeric),
+    db.Column('portfolio_concentration_ratio', db.Numeric)
 )
 
 class InvestmentProfile(db.Model):

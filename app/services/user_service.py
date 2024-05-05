@@ -23,8 +23,11 @@ class UserService:
       with cls.app.app_context():
         query = db.session.query(User)
         conditions = [getattr(User, key) == value for key, value in filters.items() if hasattr(User, key) and value is not None]
+        print('fitlers: ', filters)
+        print('conditions: ', *conditions)
         filtered_query = query.filter(*conditions)
         filtered_users = filtered_query.all()
+        print('filtered_users: ', filtered_users)
         if filtered_users:
           return {'code': 1, 'message': 'OK', 'data': filtered_users}
         else:
@@ -49,7 +52,7 @@ class UserService:
       with cls.app.app_context():
         user = None
         if newUser.nickname is not None:
-          user = cls.get_by_filter({'nickname': newUser.nickname})['data'][0]
+          user = cls.get_by_filter({'id': newUser.id})['data'][0]
         print('user: ', user.to_dict().items())
         if user and newUser:
           print('new user: ', newUser.to_dict().items())
