@@ -9,14 +9,6 @@ from app.services.kafka_service import KafkaService
 app, socketio = create_app()
 strategy_ns = api.namespace('Strategy', path='/api', description='Strategy end points')
 
-@socketio.on('run_task')
-def handle_run_task():
-    kafkaService = KafkaService()
-    kafkaService.send('Task', 'hola')
-    message = kafka_service.receive()
-    if message['code'] == 1:
-      emit('taskCompleted', 'completado')
-
 @strategy_ns.route('/strategy/<int:id>')
 class StrategyController(Resource):
   @strategy_ns.doc(description='Get a strategy by id')
@@ -50,11 +42,10 @@ class InvestmentProfileWithoutIdController(Resource):
       resp = StrategyService.get_by_filter(strategyViewModel.to_dict())
       if resp['code'] == 1:
         result = []
-        for strategy in resp['data']:
-          result.append(strategy.to_dict())
+        for item in resp['data']:
+          result.append(item)
         return {'code': 1, 'message': 'OK', 'data': result}, 200
       return {'code': 1, 'message': 'Not found strategies'}, 200
     except Exception as e:
-      print(e)
       return {'code': -2, 'message': f'Internal server error {e}'}, 500
 

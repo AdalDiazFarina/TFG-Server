@@ -2,6 +2,7 @@ from database import db
 from app.models.strategy import Strategy
 from app.models.investment_profile import investment_profile_strategy
 from app_context import create_app
+from decimal import Decimal
 from flask_restx import Resource
 from sqlalchemy.orm.session import Session
 
@@ -24,25 +25,38 @@ class StrategyService:
   def get_by_filter(cls, filters):
     try:
       with cls.app.app_context():
-        query = db.session.query(Strategy)
+        query = db.session.query(Strategy, investment_profile_strategy)
         if filters['profile_id'] != -1:
           query = query.join(investment_profile_strategy).filter(investment_profile_strategy.c.investment_profile_id == filters['profile_id'])
-        conditions = []
-        for key, value in filters.items():
-          if hasattr(Strategy, key) and key != 'id':
-            if isinstance(value, int) and value != -1:
-              conditions.append(getattr(Strategy, key) == value)
-            if isinstance(value, str) and value != '':
-              conditions.append(func.lower(getattr(Strategy, key)).ilike('%' + value.lower() + '%'))
-        filtered_query = query.filter(*conditions)
-        filtered_strategies = filtered_query.all()
-        if filtered_strategies:
-          return {'code': 1, 'message': 'OK', 'data': filtered_strategies}
-        else:
-          return {'code': -1, 'message': 'No strategies found'}
+          conditions = []
+          for key, value in filters.items():
+            if hasattr(Strategy, key) and key != 'id':
+              if isinstance(value, int) and value != -1:
+                conditions.append(getattr(Strategy, key) == value)
+              if isinstance(value, str) and value != '':
+                conditions.append(func.lower(getattr(Strategy, key)).ilike('%' + value.lower() + '%'))
+          filtered_query = query.filter(*conditions)
+          filtered_strategies = filtered_query.all()
+          result = []
+          print('filtered_strategy: ', filtered_strategies)
+          for strategy_instance, *other_data in filtered_strategies:
+            strategy_data = strategy_instance.to_dict()
+            other_data_dict = {column.name: float(value) for column, value in zip(investment_profile_strategy.columns, other_data)}
+            data = {
+              'strategy': strategy_data,
+              'other_data': other_data_dict
+            }
+
+            result.append(data)
+
+          if filtered_strategies:
+            return {'code': 1, 'message': 'OK', 'data': result}
+          else:
+            return {'code': -1, 'message': 'No strategies found'}
+
     except Exception as e:
-      print("Error: ", e)
-      return {'code': -2, 'message': f'Error: {e}'}
+        return {'code': -2, 'message': f'Error: {e}'}
+
    
   @classmethod
   def createStrategy(cls, strategy):

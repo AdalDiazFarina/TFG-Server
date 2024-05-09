@@ -12,6 +12,7 @@ from app.controllers.auth_controller import RegisterController, LoginController,
 from app.controllers.user_controller import UserController
 from app.controllers.investment_profile_controller import InvestmentProfileController, InvestmentProfileWithoutIdController
 from app.controllers.strategy_controller import StrategyController
+from app.services.kafka_service import KafkaService
 
 # Initialization of the app
 app, socketio = create_app()
@@ -19,6 +20,15 @@ CORS(app)
 api.init_app(app)
 swagger = Swagger(api)
 
+@socketio.on('run_task')
+def handle_run_task():
+    kafkaService = KafkaService()
+    kafkaService.send('tasks', 'hola')
+    kafkaService.receive('completed_tasks')
+    # if message.get('code') == 1:  # Utiliza message.get() para evitar errores si 'code' no está presente
+    #   emit('taskCompleted', 'completado')
+    # else:
+    #   print("Mensaje recibido pero 'code' no es 1:", message)
 
 @click.group()
 def cli():
