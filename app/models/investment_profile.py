@@ -6,6 +6,7 @@ investment_profile_strategy = db.Table(
     'investment_profile_strategy',
     db.Column('investment_profile_id', db.Integer, db.ForeignKey('investment_profile.id', ondelete='CASCADE'), primary_key=True),
     db.Column('strategy_id', db.Integer, db.ForeignKey('strategy.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('validated', db.Boolean, nullable=False, default=False),
     db.Column('total_profitability', db.Numeric),
     db.Column('volatility', db.Numeric),
     db.Column('maximum_loss', db.Numeric),

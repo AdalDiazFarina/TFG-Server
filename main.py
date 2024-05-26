@@ -5,6 +5,7 @@ import time
 from flask import Flask
 from flask_restx import Swagger
 from flask_cors import CORS
+from flask_socketio import emit
 from app_context import create_app, api
 from app.commands.db import commmand_db_create, command_db_delete
 from app.commands.migrations import command_create_migration, command_update_migration, command_delete_migration
@@ -21,14 +22,12 @@ api.init_app(app)
 swagger = Swagger(api)
 
 @socketio.on('run_task')
-def handle_run_task():
+def handle_run_task(data):
     kafkaService = KafkaService()
-    kafkaService.send('tasks', 'hola')
-    kafkaService.receive('completed_tasks')
-    # if message.get('code') == 1:  # Utiliza message.get() para evitar errores si 'code' no está presente
-    #   emit('taskCompleted', 'completado')
-    # else:
-    #   print("Mensaje recibido pero 'code' no es 1:", message)
+    kafkaService.send('tasks', data)
+    message = kafkaService.receive('completed_tasks')
+    print('message: ', message)
+    emit('task_completed', message)
 
 @click.group()
 def cli():
