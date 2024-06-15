@@ -1,6 +1,6 @@
 from database import db
 from app.models.strategy import Strategy
-from app.models.investment_profile import investment_profile_strategy
+from app.models.investment_profile import InvestmentProfileStrategy
 from app_context import create_app
 from decimal import Decimal
 from flask_restx import Resource
@@ -25,9 +25,9 @@ class StrategyService:
   def get_by_filter(cls, filters):
     try:
       with cls.app.app_context():
-        query = db.session.query(Strategy, investment_profile_strategy)
+        query = db.session.query(Strategy, InvestmentProfileStrategy)
         if filters['profile_id'] != -1:
-          query = query.join(investment_profile_strategy).filter(investment_profile_strategy.c.investment_profile_id == filters['profile_id'])
+          query = query.join(InvestmentProfileStrategy).filter(InvestmentProfileStrategy.c.investment_profile_id == filters['profile_id'])
           conditions = []
           for key, value in filters.items():
             if hasattr(Strategy, key) and key != 'id':
@@ -41,7 +41,7 @@ class StrategyService:
           print('filtered_strategy: ', filtered_strategies)
           for strategy_instance, *other_data in filtered_strategies:
             strategy_data = strategy_instance.to_dict()
-            other_data_dict = {column.name: float(value) for column, value in zip(investment_profile_strategy.columns, other_data)}
+            other_data_dict = {column.name: float(value) for column, value in zip(InvestmentProfileStrategy.columns, other_data)}
             data = {
               'strategy': strategy_data,
               'other_data': other_data_dict

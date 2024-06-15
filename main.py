@@ -37,7 +37,7 @@ def cli():
 @click.option('--run', '-r', help='Start the application')
 def run(run):
     if __name__ == '__main__':
-        socketio.run(app)
+        socketio.run(app, allow_unsafe_werkzeug=True)
 
 @cli.command()
 @click.option('--init', '-i', help='Create everything you need and run the application for the first time')

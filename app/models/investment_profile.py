@@ -1,23 +1,25 @@
 from database import db
 from app.models.strategy import Strategy
-from sqlalchemy import ForeignKeyConstraint
+from sqlalchemy import ForeignKeyConstraint, UniqueConstraint
 
-investment_profile_strategy = db.Table(
-    'investment_profile_strategy',
-    db.Column('investment_profile_id', db.Integer, db.ForeignKey('investment_profile.id', ondelete='CASCADE'), primary_key=True),
-    db.Column('strategy_id', db.Integer, db.ForeignKey('strategy.id', ondelete='CASCADE'), primary_key=True),
-    db.Column('validated', db.Boolean, nullable=False, default=False),
-    db.Column('total_profitability', db.Numeric),
-    db.Column('volatility', db.Numeric),
-    db.Column('maximum_loss', db.Numeric),
-    db.Column('sharpe', db.Numeric),
-    db.Column('sortino', db.Numeric),
-    db.Column('alpha', db.Numeric),
-    db.Column('beta', db.Numeric),
-    db.Column('information_ratio', db.Numeric),
-    db.Column('success_rate', db.Numeric),
-    db.Column('portfolio_concentration_ratio', db.Numeric)
-)
+class InvestmentProfileStrategy(db.Model):
+    __tablename__ = 'investment_profile_strategy'
+    investment_profile_id = db.Column(db.Integer, primary_key=True)
+    strategy_id = db.Column(db.Integer, primary_key=True)
+    validated = db.Column(db.Boolean, nullable=False, default=False)
+    total_profitability = db.Column(db.Numeric)
+    volatility = db.Column(db.Numeric)
+    maximum_loss = db.Column(db.Numeric)
+    sharpe = db.Column(db.Numeric)
+    sortino = db.Column(db.Numeric)
+    alpha = db.Column(db.Numeric)
+    beta = db.Column(db.Numeric)
+    information_ratio = db.Column(db.Numeric)
+    success_rate = db.Column(db.Numeric)
+    portfolio_concentration_ratio = db.Column(db.Numeric)
+    
+    profile = db.relationship('InvestmentProfile', back_populates='strategies')
+    strategy = db.relationship('Strategy', back_populates='profiles')
 
 class InvestmentProfile(db.Model):
   __tablename__ = 'investment_profile'
@@ -31,7 +33,7 @@ class InvestmentProfile(db.Model):
   duration = db.Column(db.Date)
   monthly_contribution = db.Column(db.Numeric)
 
-  strategies = db.relationship('Strategy', secondary=investment_profile_strategy, lazy='subquery', passive_deletes=True)
+  strategies = db.relationship('Strategy', secondary='investment_profile_strategy', lazy='subquery', passive_deletes=True)
 
   def to_dict(self):
     return { 

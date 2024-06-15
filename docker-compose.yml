@@ -12,5 +12,22 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data 
     container_name: ${CONTAINER_NAME}
+
+  flask-app:
+    build: .
+    container_name: fundflowforge
+    ports:
+      - "5000:5000"  
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - my_network
+
 volumes:
   postgres_data:
+
+networks:
+  my_network:
+    driver: bridge

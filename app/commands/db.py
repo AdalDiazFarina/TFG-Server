@@ -1,9 +1,13 @@
 import subprocess
+from sqlalchemy import create_engine
+import psycopg2
+import time
 import os
 from dotenv import load_dotenv
 load_dotenv()
 CONTAINER_NAME = os.getenv("CONTAINER_NAME")
 DB_NAME = os.getenv("DB_NAME")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 ### This command cretes the database
 def commmand_db_create():

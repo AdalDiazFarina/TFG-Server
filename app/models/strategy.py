@@ -9,9 +9,6 @@ class Strategy(db.Model):
   description = db.Column(db.String(255))
   model = db.Column(db.String(255))
 
-  operations = db.relationship('Operation', lazy=True, cascade='all, delete-orphan')
-
-
   def to_dict(self):
     return {
       'name': self.name,
