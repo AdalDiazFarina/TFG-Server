@@ -19,7 +19,6 @@ class RegisterController(Resource):
     @auth_ns.response(500, 'Internal Server Error')
     def post(self):
         try: 
-            print('Llegue a este punto')
             userViewModel = UserViewModel(request.get_json())
             filters = {'email': userViewModel.user.email, 'nickname': userViewModel.user.nickname}
             resp = UserService.get_by_filter(filters)
@@ -28,6 +27,7 @@ class RegisterController(Resource):
             UserService.createUser(userViewModel.user)
             return {'code': 1, 'message': 'User registered successfully'}, 201
         except Exception as e:
+            print(f'error: {e}')
             db.session.rollback()
             return {'code': -2, 'message': 'Internal Server Error: {e}'}, 500
 
