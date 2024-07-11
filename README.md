@@ -53,7 +53,13 @@ venv\Scripts\activate
 ```sh 
 source venv/bin/activate
 ```
-5. Create the .env file:
+
+5. Install dependencies:
+```sh 
+pip install -r requirements.txt
+```
+
+6. Create the .env file:
 
 Create a .env file in the root of the project and add the following data:
 
@@ -71,23 +77,25 @@ BOOTSTRAP_SERVERS = "localhost:9092"
 ### Running the Project
 To initialize and run the server, follow these steps:
 
-Initialize the Database:
+1. Initialize the Database:
 
 This command will create the database in the Docker container and apply the migrations.
 
-sh
-Copiar código
+```sh
 python main.py init
-Start the Server:
+```
+
+2. Start the Server:
 
 This command will start the server.
 
-sh
-Copiar código
+```sh
 python main.py run
-API Documentation
+```
+
+### API Documentation
 The API endpoints are documented using Swagger. You can access the documentation by navigating to the Swagger UI endpoint after starting the server.
 
-Usage
-Initialize Database: Run python main.py init to create and migrate the database.
-Start Server: Run python main.py run to start the server.
+### Usage
+- Initialize Database: Run python main.py init to create and migrate the database.
+- Start Server: Run python main.py run to start the server.
