@@ -10,6 +10,7 @@ class UserService:
     try:
       with cls.app.app_context():
         user = User.query.get(id)
+        print(user)
         if user:
           return {'code': 1, 'message': 'OK', 'data': user}
         else:

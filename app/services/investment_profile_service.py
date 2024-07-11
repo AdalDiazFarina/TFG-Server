@@ -37,7 +37,6 @@ class InvestmentProfileService:
             if isinstance(value, str) and value != '':
               conditions.append(func.lower(getattr(InvestmentProfile, key)).ilike('%' + value.lower() + '%'))
         filtered_query = query.filter(*conditions)
-        print(*conditions)
         filtered_profiles = filtered_query.all()
         if filtered_profiles:
           return {'code': 1, 'message': 'OK', 'data': filtered_profiles}
@@ -110,6 +109,7 @@ class InvestmentProfileService:
         
         db.session.add(profile)
         db.session.commit()
+        print(profile.to_dict())
         return {'code': 1, 'message': 'OK', 'data': profile.to_dict()}
     except Exception as e:
       db.session.rollback()

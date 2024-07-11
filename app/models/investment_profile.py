@@ -14,6 +14,7 @@ class InvestmentProfile(db.Model):
     initial_capital = db.Column(db.Numeric)
     duration = db.Column(db.Numeric)
     monthly_contribution = db.Column(db.Numeric)
+    image = db.Column(db.String(128))
 
     # Relación con User
     user = db.relationship('User', backref='profiles')
@@ -26,7 +27,8 @@ class InvestmentProfile(db.Model):
             'description': self.description,
             'initial_capital': float(self.initial_capital) if self.initial_capital is not None else None,
             'duration': float(self.duration) if self.duration is not None else None,
-            'monthly_contribution': float(self.monthly_contribution) if self.monthly_contribution is not None else None
+            'monthly_contribution': float(self.monthly_contribution) if self.monthly_contribution is not None else None,
+            'image': self.image
         }
 
     __table_args__ = (

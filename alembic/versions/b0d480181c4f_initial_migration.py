@@ -41,6 +41,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=255), nullable=True),
     sa.Column('nickname', sa.String(length=255), nullable=True),
     sa.Column('email', sa.String(length=255), nullable=True),
+    sa.Column('image', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('investment_profile',
@@ -50,6 +51,7 @@ def upgrade() -> None:
     sa.Column('initial_capital', sa.Numeric(), nullable=True),
     sa.Column('duracion', sa.Date(), nullable=True),
     sa.Column('monthly_contribution', sa.Numeric(), nullable=True),
+    sa.Column('image', sa.String(length=255), nullable=True),
     sa.ForeignKeyConstraint(['id_user'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )

@@ -9,7 +9,8 @@ class User(db.Model):
   name = db.Column(db.String(255))
   nickname = db.Column(db.String(255))
   email = db.Column(db.String(255))
-  password_hash = db.Column(db.String(128), nullable=False)
+  password_hash = db.Column(db.String(255), nullable=False)
+  image = db.Column(db.String(255))
 
   def set_password(self, password):
     try:
@@ -31,6 +32,6 @@ class User(db.Model):
       return {'code': -2, 'message': f'Something went wrong when checking the password. {e}'}
 
   def to_dict(self):
-    return {'id': self.id, 'name': self.name, 'nickname': self.nickname, 'email': self.email}
+    return {'id': self.id, 'name': self.name, 'nickname': self.nickname, 'email': self.email, 'image': self.image}
 
   investment_profiles = db.relationship('InvestmentProfile', lazy=True, back_populates='user')

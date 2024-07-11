@@ -21,6 +21,7 @@ class InvestmentProfileViewModel:
     self.profile.initial_capital = data['initial_capital'] if data['initial_capital'] is not None else -1
     self.profile.duration = data['duration'] if data['duration'] is not None else -1
     self.profile.monthly_contribution = data['monthly_contribution'] if data['monthly_contribution'] is not None else -1
+    self.profile.image = data['image']
 
   def to_dict():
     return {       
@@ -29,7 +30,8 @@ class InvestmentProfileViewModel:
       'description': self.profile.description,
       'initial_capital': float(self.profile.initial_capital), 
       'duration': float(self.profile.duration),
-      'monthly_contribution': float(self.profile.monthly_contribution)
+      'monthly_contribution': float(self.profile.monthly_contribution),
+      'image': self.image
     }
 
 class UpdateInvestmentProfileViewModel:
@@ -39,14 +41,17 @@ class UpdateInvestmentProfileViewModel:
   initial_capital = None
   duration = None
   monthly_contribution = None
+  image = ''
 
   def __init__(self, data):
+    print(data)
     self.id = data['id']
     self.name = data['name']
     self.description = data['description']
     self.initial_capital = data['initial_capital']
     self.duration = data['duration']
     self.monthly_contribution = data['monthly_contribution']
+    self.image = data['image']
   
   def to_dict(self):
     return {
@@ -55,5 +60,6 @@ class UpdateInvestmentProfileViewModel:
       'description': self.description, 
       'initial_capital': float(self.initial_capital), 
       'duration': self.duration, 
-      'monthly_contribution': float(self.monthly_contribution)
+      'monthly_contribution': float(self.monthly_contribution),
+      'image': self.image
     }
