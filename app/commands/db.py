@@ -32,7 +32,7 @@ def command_db_delete():
   commands = []
   commands.append(f'docker stop {CONTAINER_NAME}')
   commands.append(f'docker rm {CONTAINER_NAME}')
-  commands.append(f'docker volume rm tfg_postgres_data')
+  commands.append(f'docker volume rm tfg-server_postgres_data')
   for command in commands:
     r = subprocess.run(command, shell=True, capture_output=True, text=True)
     if (r.returncode == 0):

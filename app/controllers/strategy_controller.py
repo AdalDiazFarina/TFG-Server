@@ -47,5 +47,6 @@ class InvestmentProfileWithoutIdController(Resource):
         return {'code': 1, 'message': 'OK', 'data': result}, 200
       return {'code': 1, 'message': 'Not found strategies'}, 200
     except Exception as e:
+      print(f'Internal server error {e}')
       return {'code': -2, 'message': f'Internal server error {e}'}, 500
 

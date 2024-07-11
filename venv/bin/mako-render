@@ -1,4 +1,4 @@
-#!/home/adal110/workspace/tfg/tfg-server/venv/bin/python
+#!/home/adal110/workspace/tfg/TFG-Server/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

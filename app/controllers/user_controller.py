@@ -20,6 +20,7 @@ class UserController(Resource):
         try:
             userid = get_jwt_identity()
             user = UserService.get_by_id(userid)
+            print(f'user: {user}, userid: {userid}')
             if user['code'] == 1:
                 return {'code': 1, 'message': 'OK', 'data': user['data'].to_dict()}, 200
             else:

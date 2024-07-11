@@ -1,5 +1,7 @@
 from database import db
-from app.models.investment_profile import InvestmentProfile
+from app.models.investment_profile import InvestmentProfile, InvestmentProfileStrategy
+from app.models.strategy import Strategy
+from app.models.operation import Operation
 from app_context import create_app, engine
 from flask_restx import Resource
 from sqlalchemy.orm.session import Session
@@ -49,12 +51,49 @@ class InvestmentProfileService:
   def createProfile(cls, profile):
     try:
       with cls.app.app_context():
-          db.session.add(profile)
-          db.session.commit()
-          return {'code': 1, 'message': 'OK'}
+        db.session.add(profile)
+        db.session.commit()
+        cls.associateStrategiesWithTheProfile(profile)
+        return {'code': 1, 'message': 'OK'}
     except Exception as e:
       print('Error creating the investment profile')
       return {'code': -1, 'message': 'Error creating the investment profile'}
+
+  @classmethod
+  def associateStrategiesWithTheProfile(cls, profile):
+    try:
+      with cls.app.app_context():
+        strategies = db.session.query(Strategy).all()
+        print("Strategies: ", strategies)
+        for strategy in strategies:
+          existing_association = db.session.query(InvestmentProfileStrategy).filter_by(
+            investment_profile_id=profile.id,
+            strategy_id=strategy.id
+          ).first()
+          if existing_association:
+            print("- Association between Strategy '{}' and Profile '{}' already exists.".format(strategy.name, profile.name))
+          else:
+            new_entry = InvestmentProfileStrategy(
+              investment_profile_id=profile.id,
+              strategy_id=strategy.id,
+              validated=False,
+              total_profitability=0.0,
+              volatility=0.0,
+              maximum_loss=0.0,
+              sharpe=0.0,
+              sortino=0.0,
+              alpha=0.0,
+              beta=0.0,
+              information_ratio=0.0,
+              success_rate=0.0,
+              portfolio_concentration_ratio=0.0,
+            )
+            db.session.add(new_entry)
+            db.session.commit()
+        return {'code': 1, 'message': 'OK'}
+    except Exception as e:
+      print(f"Error associating profiles with strategies: {e}")
+      return {'code': -1, 'message': 'Error associating profiles with strategies'}
 
   @classmethod
   def updateProfile(cls, newProfile):
@@ -81,7 +120,20 @@ class InvestmentProfileService:
     try:
       with cls.app.app_context():
           profile = cls.get_by_id(id)
+          print(f'profile: ', profile)
           if profile['code'] == 1:
+            investment_profile = profile['data']    
+            investment_profile_id = investment_profile.id
+            strategies_to_delete = db.session.query(InvestmentProfileStrategy).filter_by(investment_profile_id=investment_profile_id).all()
+            operation_to_delete = db.session.query(Operation).filter_by(investment_profile_id=investment_profile_id).all()
+            for operation in operation_to_delete:
+              db.session.delete(operation)
+
+            for strategy in strategies_to_delete:
+              db.session.delete(strategy)
+
+            profile_instance = profile['data']
+            print(f'Deleting profile instance: {profile_instance}')
             db.session.delete(profile['data'])
             db.session.commit()
             return {'code': 1, 'message': 'OK'}
@@ -89,6 +141,7 @@ class InvestmentProfileService:
             return {'code': -1, 'message': 'Profile not found'}
     except Exception as e:
       db.session.rollback()
+      print(f'Exception occurred: {str(e)}')
       return {'code': -1, 'message': 'Error deleting the investment profile'}
 
   @classmethod

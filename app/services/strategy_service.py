@@ -3,6 +3,7 @@ from app.models.strategy import Strategy
 from app.models.investment_profile import InvestmentProfileStrategy
 from app_context import create_app
 from decimal import Decimal
+from sqlalchemy import func
 from flask_restx import Resource
 from sqlalchemy.orm.session import Session
 
@@ -24,39 +25,42 @@ class StrategyService:
   @classmethod
   def get_by_filter(cls, filters):
     try:
-      with cls.app.app_context():
-        query = db.session.query(Strategy, InvestmentProfileStrategy)
-        if filters['profile_id'] != -1:
-          query = query.join(InvestmentProfileStrategy).filter(InvestmentProfileStrategy.c.investment_profile_id == filters['profile_id'])
-          conditions = []
-          for key, value in filters.items():
-            if hasattr(Strategy, key) and key != 'id':
-              if isinstance(value, int) and value != -1:
-                conditions.append(getattr(Strategy, key) == value)
-              if isinstance(value, str) and value != '':
-                conditions.append(func.lower(getattr(Strategy, key)).ilike('%' + value.lower() + '%'))
-          filtered_query = query.filter(*conditions)
-          filtered_strategies = filtered_query.all()
-          result = []
-          print('filtered_strategy: ', filtered_strategies)
-          for strategy_instance, *other_data in filtered_strategies:
-            strategy_data = strategy_instance.to_dict()
-            other_data_dict = {column.name: float(value) for column, value in zip(InvestmentProfileStrategy.columns, other_data)}
-            data = {
+      with db.session() as session:
+        query = session.query(Strategy, InvestmentProfileStrategy)
+        if 'profile_id' in filters and filters['profile_id'] != -1:
+            query = query.join(InvestmentProfileStrategy, Strategy.id == InvestmentProfileStrategy.strategy_id)
+            query = query.filter(InvestmentProfileStrategy.investment_profile_id == filters['profile_id'])
+        conditions = []
+        for key, value in filters.items():
+          if hasattr(Strategy, key):
+            attribute = getattr(Strategy, key)
+            if isinstance(value, int) and value != -1:
+              conditions.append(attribute == value)
+            elif isinstance(value, str) and value != '':
+              print(f'{attribute} ilike {value.lower()}')
+              conditions.append(func.lower(attribute).ilike('%' + value.lower() + '%'))
+            
+        if conditions:
+          query = query.filter(*conditions)
+        
+        results = query.all()
+        
+        if results:
+          data = []
+          for strategy, profile_strategy in results:
+            strategy_data = strategy.to_dict()  
+            profile_strategy_data = profile_strategy.to_dict()  
+            data.append({
               'strategy': strategy_data,
-              'other_data': other_data_dict
-            }
-
-            result.append(data)
-
-          if filtered_strategies:
-            return {'code': 1, 'message': 'OK', 'data': result}
-          else:
-            return {'code': -1, 'message': 'No strategies found'}
-
+              'profile_strategy': profile_strategy_data
+            })
+            
+          return {'code': 1, 'message': 'OK', 'data': data}
+        else:
+          return {'code': -1, 'message': 'No strategies found'}
+      
     except Exception as e:
-        return {'code': -2, 'message': f'Error: {e}'}
-
+      return {'code': -2, 'message': f'Error: {e}'}
    
   @classmethod
   def createStrategy(cls, strategy):

@@ -8,7 +8,7 @@ investmentProfileDoc = api.model('InvestmentProfile', {
     'name': fields.String(required=True, description='Name of the investment profile'),
     'description': fields.String(required=True, description='Description of the investment profile'),
     'initial_capital': fields.Float(required=True, description='Initial capital for the investment'),
-    'duration': fields.Integer(required=True, description='Duration of the investment in months'),
+    'duration': fields.Integer(required=True, description='Duration of the investment in years'),
     'monthly_contribution': fields.Float(required=True, description='Monthly contribution amount')
 })
 
@@ -19,7 +19,7 @@ class InvestmentProfileViewModel:
     self.profile.name = data['name']
     self.profile.description = data['description'] 
     self.profile.initial_capital = data['initial_capital'] if data['initial_capital'] is not None else -1
-    self.profile.duration = data['duration'] if data['duration'] is not None else ''
+    self.profile.duration = data['duration'] if data['duration'] is not None else -1
     self.profile.monthly_contribution = data['monthly_contribution'] if data['monthly_contribution'] is not None else -1
 
   def to_dict():
@@ -28,7 +28,7 @@ class InvestmentProfileViewModel:
       'name': self.profile.name,
       'description': self.profile.description,
       'initial_capital': float(self.profile.initial_capital), 
-      'duration': self.profile.duration,
+      'duration': float(self.profile.duration),
       'monthly_contribution': float(self.profile.monthly_contribution)
     }
 

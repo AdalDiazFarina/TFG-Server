@@ -41,6 +41,7 @@ class LoginController(Resource):
     @auth_ns.response(500, 'Internal Server Error')
     def post(self):
         try:
+            print(f'params: {request.get_json()}')
             user_data = request.get_json()
             filters = {'nickname': user_data['nickname']}
             resp = UserService.get_by_filter(filters)
@@ -50,6 +51,7 @@ class LoginController(Resource):
                 return {'code': -1, 'message': 'Invalid username or password'}, 400
             resp = user.check_password(user_data['password'])
             if user and resp['code'] == 1:
+                print('user returned')
                 access_token = create_access_token(identity=user.id)
                 refresh_token = create_refresh_token(identity=user.id)
                 return {'code': 1, 'messaje': 'OK', 'access_token': access_token, 'refresh_token': refresh_token}, 200

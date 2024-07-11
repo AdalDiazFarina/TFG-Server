@@ -47,7 +47,7 @@ def upgrade() -> None:
     op.drop_column('operation', 'period')
     
     # Crea el tipo ENUM 'period' explícitamente
-    period_enum = sa.Enum('Period 1', 'Period 2', 'Period 3', name='period')
+    period_enum = sa.Enum('period_1', 'period_2', 'period_3', name='period')
     period_enum.create(op.get_bind())
     
     # Agrega la nueva columna 'period' con el tipo enumerado
@@ -74,7 +74,7 @@ def downgrade() -> None:
     op.create_foreign_key('operation_id_profile_fkey', 'operation', 'investment_profile', ['id_profile'], ['id'], ondelete='CASCADE')
     op.create_foreign_key('operation_id_strategy_fkey', 'operation', 'strategy', ['id_strategy'], ['id'], ondelete='CASCADE')
     op.alter_column('operation', 'period',
-               existing_type=sa.Enum('Period 1', 'Period 2', 'Period 3', name='period'),
+               existing_type=sa.Enum('period_1', 'period_2', 'period_3', name='period'),
                type_=sa.VARCHAR(length=255),
                nullable=True)
     op.drop_column('operation', 'strategy_id')

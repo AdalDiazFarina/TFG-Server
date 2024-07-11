@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/adal110/workspace/tfg/tfg-server/venv"
+set -gx VIRTUAL_ENV "/home/adal110/workspace/tfg/TFG-Server/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

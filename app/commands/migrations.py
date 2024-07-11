@@ -14,13 +14,14 @@ def command_update_migration():
   command = 'alembic upgrade head'
   r = subprocess.run(command, shell=True, capture_output=True, text=True)
   if (r.returncode == 0):
-    print("Command execution was successful")
+    print("Command alembic upgrade was successful")
     print(r.stdout)
   else:
     print("Command execution failed")
     print(r.stderr) 
 
 def command_delete_migration(flag):
+  """Deletes a migration with the migration id"""
   if (flag == 'last'):
     command = 'alembic downgrade -1'
   else:

@@ -13,6 +13,7 @@ from app.controllers.auth_controller import RegisterController, LoginController,
 from app.controllers.user_controller import UserController
 from app.controllers.investment_profile_controller import InvestmentProfileController, InvestmentProfileWithoutIdController
 from app.controllers.strategy_controller import StrategyController
+from app.controllers.operation_controller import OperationController
 from app.services.kafka_service import KafkaService
 
 # Initialization of the app
@@ -34,14 +35,14 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--run', '-r', help='Start the application')
-def run(run):
+def run():
+    """Run the application"""
     if __name__ == '__main__':
         socketio.run(app, allow_unsafe_werkzeug=True)
 
 @cli.command()
-@click.option('--init', '-i', help='Create everything you need and run the application for the first time')
-def init(init):
+def init():
+    """Build the application"""
     command_db_delete()
     commmand_db_create()
     ## Waiting for database connection
@@ -51,17 +52,18 @@ def init(init):
 @cli.command()
 @click.argument('description')
 def create_migration(description):
+    """Create a new migration with the given description"""
     command_create_migration(description)
 
 @cli.command()
-@click.option('--update-migration', '-um', help='Update the database with the new migrations')
-def update_migration(update_migration):
+def update_migration():
+    """Update the database"""
     command_update_migration()
 
 @cli.command()
 @click.argument('flag')
-@click.option('--delete-migration', '-dm', help='Delete a migration')
 def delete_migration(flag):
+    """Removes a migration with the given flag"""
     command_delete_migration(flag) 
 
 if __name__ == '__main__':
